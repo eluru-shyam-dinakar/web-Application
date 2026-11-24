@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Student Manager</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f7f9fc;color:#222}
+    .top{background:#111;color:#fff;padding:12px}
+    .wrap{max-width:960px;margin:18px auto;padding:12px}
+    .card{background:#fff;padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.05)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border:1px solid #eee;padding:8px;text-align:left}
+    button{padding:6px 8px;border-radius:6px;border:0}
+  </style>
+</head>
+<body>
+  <div class="top"><h1 style="margin:0;font-size:18px">Admin — Student Manager</h1></div>
+  <div class="wrap">
+    <div class="card" id="loginCard">
+      <h3>Admin Login</h3>
+      <label>Username</label>
+      <input id="adminUser" placeholder="admin" style="padding:8px;width:100%;margin-bottom:8px">
+      <label>Password</label>
+      <input id="adminPass" type="password" placeholder="admin" style="padding:8px;width:100%;margin-bottom:8px">
+      <div style="margin-top:8px"><button id="adminLogin" style="background:#0b74de;color:#fff">Sign in</button></div>
+      <div id="adminMsg" style="color:#c0392b;margin-top:8px"></div>
+    </div>
+
+    <div class="card" id="panel" style="display:none;margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><h3>Saved Students</h3><div><button id="logoutBtn" style="background:#ef4444;color:#fff">Logout</button></div></div>
+      <table>
+        <thead><tr><th>Name</th><th>Student ID</th><th>Email</th><th>Password</th><th>Action</th></tr></thead>
+        <tbody id="studentsBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    function readStudents(){return JSON.parse(localStorage.getItem('students')||'[]')}
+    function saveStudents(s){localStorage.setItem('students',JSON.stringify(s))}
+    const adminLogin=document.getElementById('adminLogin');
+    const adminMsg=document.getElementById('adminMsg');
+    adminLogin.onclick=()=>{
+      const u=document.getElementById('adminUser').value.trim();
+      const p=document.getElementById('adminPass').value;
+      if(u==='admin'&&p==='admin'){
+        document.getElementById('loginCard').style.display='none';document.getElementById('panel').style.display='block';renderStudents();
+      } else adminMsg.textContent='Invalid admin credentials (demo: admin / admin)';
+    }
+    function renderStudents(){
+      const tbody=document.getElementById('studentsBody');const students=readStudents();
+      if(!students.length){tbody.innerHTML='<tr><td colspan="5">No students found.</td></tr>';return}
+      tbody.innerHTML = students.map((s,i)=>`<tr><td>${s.name}</td><td>${s.sid}</td><td>${s.email}</td><td>${s.pw}</td><td><button data-i="${i}" class="del" style="background:#ef4444;color:#fff">Delete</button></td></tr>`).join('');
+      document.querySelectorAll('.del').forEach(b=>b.onclick=e=>{const i=+e.target.dataset.i;students.splice(i,1);saveStudents(students);renderStudents();});
+    }
+    document.getElementById('logoutBtn').onclick=()=>{document.getElementById('panel').style.display='none';document.getElementById('loginCard').style.display='block';document.getElementById('adminPass').value='';}
+  </script>
+</body>
+</html>

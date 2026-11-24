@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>E-commerce Web Application</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f3f6fb;color:#222}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .box{background:#fff;padding:18px;border-radius:8px;max-width:520px;width:100%;text-align:left;box-shadow:0 6px 18px rgba(11,116,222,0.06)}
+    h1{margin:0 0 8px;font-size:20px;text-align:center}
+    label{display:block;margin:6px 0 4px}
+    input{width:100%;padding:8px;border:1px solid #dde7f2;border-radius:6px}
+    .row{display:flex;gap:8px;justify-content:center;margin-top:12px}
+    .btn{padding:8px 12px;border-radius:6px;color:#fff;background:#0b74de;text-decoration:none;border:0}
+    .green{background:#10b981}
+    .muted{text-align:center;color:#666;margin-top:10px;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="wrap"><div class="box">
+  <h1>E-commerce Web Application</h1>
+  <p style="text-align:center;margin:0 0 12px;color:#555">Create a customer account or login to enter the store.</p>
+  <form id="form">
+    <label for="name">Name</label>
+    <input id="name" placeholder="Full name">
+    <label for="cid">Customer ID</label>
+    <input id="cid" placeholder="e.g. C123">
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="you@example.com">
+    <label for="pw">Password</label>
+    <input id="pw" type="password" placeholder="password">
+    <div class="row">
+      <button id="signup" type="button" class="btn green">Sign Up</button>
+      <button id="login" type="button" class="btn">Login</button>
+      <a href="admin.html" class="btn" style="background:#6b7280">Admin</a>
+    </div>
+  </form>
+  <div id="msg" class="muted"></div>
+</div></div>
+<script>
+function read(){return JSON.parse(localStorage.getItem('students')||'[]')}
+function save(s){localStorage.setItem('students',JSON.stringify(s))}
+document.getElementById('signup').onclick=()=>{
+  const name=document.getElementById('name').value.trim();
+  const sid=document.getElementById('cid').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pw=document.getElementById('pw').value;
+  const msg=document.getElementById('msg');
+  if(!name||!sid||!email||!pw){msg.textContent='All fields are required';msg.style.color='#c0392b';return}
+  const a=read(); if(a.find(x=>x.sid===sid||x.email===email)){msg.textContent='ID or email already exists';msg.style.color='#c0392b';return}
+  a.push({name,sid,email,pw});save(a);msg.textContent='Account created — please login';msg.style.color='#16a34a';
+}
+document.getElementById('login').onclick=()=>{
+  const email=document.getElementById('email').value.trim();const pw=document.getElementById('pw').value;const msg=document.getElementById('msg');
+  const a=read();const u=a.find(x=>x.email===email&&x.pw===pw);if(!u){msg.textContent='Invalid credentials';msg.style.color='#c0392b';return}
+  sessionStorage.setItem('studentSid',u.sid);location.href='user.html';
+}
+</script>
+</body>
+</html>

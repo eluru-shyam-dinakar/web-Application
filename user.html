@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Student Dashboard</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f7fafc;color:#222}
+    .top{background:#0b74de;color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center}
+    .card{max-width:720px;margin:18px auto;background:#fff;padding:14px;border-radius:8px;box-shadow:0 6px 18px rgba(3,102,214,0.06)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border:1px solid #eee;padding:8px;text-align:left}
+    button{padding:6px 8px;border-radius:6px;border:0}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div><a href="index.html" style="color:#fff;text-decoration:none">← Portal</a></div>
+    <div>Student Dashboard</div>
+    <div><button id="logout" style="background:#ef4444;color:#fff">Logout</button></div>
+  </div>
+  <div class="card">
+    <h2 id="welcome">Welcome</h2>
+    <p id="subtitle">Loading student details…</p>
+    <table id="details"><tbody></tbody></table>
+  </div>
+  <script>
+    const sid = sessionStorage.getItem('studentSid');
+    if(!sid) location.href='index.html';
+    const students = JSON.parse(localStorage.getItem('students')||'[]');
+    const me = students.find(s=>s.sid===sid);
+    if(!me) location.href='index.html';
+    document.getElementById('welcome').textContent = `Hello, ${me.name}`;
+    document.getElementById('subtitle').textContent = `Student ID: ${me.sid}`;
+    const tbody = document.querySelector('#details tbody');
+    tbody.innerHTML = `
+      <tr><th>Name</th><td>${me.name}</td></tr>
+      <tr><th>ID</th><td>${me.sid}</td></tr>
+      <tr><th>Email</th><td>${me.email}</td></tr>
+      <tr><th>Password</th><td>${me.pw}</td></tr>
+    `;
+    document.getElementById('logout').onclick = ()=>{sessionStorage.removeItem('studentSid');location.href='index.html'};
+  </script>
+</body>
+</html>
